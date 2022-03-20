@@ -5,6 +5,7 @@ import TCPClient
 
 MAROON_RGB = "#B03060"
 GOLD_RGB = "#FFD700"
+SERVER_ADDRESS = ("192.168.0.30", 9000)
 
 
 class BuzzerPlayer():
@@ -17,9 +18,9 @@ class BuzzerPlayer():
             self.app.when_closed = self.cleanup
             #self.app.set_full_screen()
             self.name = guizero.Text(self.app, text="Player " + str(playerNumber), size=200, font="Calibri", color="white", width = "fill", height = "fill")
-            self.TCPSocket = TCPClient.TCPClient("localhost", 9000, self.handle_server_response)
+            self.TCPSocket = TCPClient.TCPClient(SERVER_ADDRESS[0], SERVER_ADDRESS[1], self.handle_server_response)
             self.TCPSocket.start()
-            self.TCPSocket.send("Player " + str(playerNumber))
+            self.TCPSocket.send("IDENTITY:Player " + str(playerNumber))
             self.app.display()
         def pressed(self):
             if self.count % 2:
@@ -49,10 +50,16 @@ class BuzzerPlayer():
             self.app.cancel(self.flash_color)
             self.app.bg = MAROON_RGB
         def check_buzz(self):
-            self.TCPSocket.send("Player " + str(self.playerNumber))
-            pass
+            self.TCPSocket.send("BUZZ")
         def handle_server_response(self, response):
-            print(response)
-            
-Player = BuzzerPlayer(1)
+            responses = repsonse.split(":")
+            if responses[0] == "BUZZ":
+                self.buzz()
+            elif responses[0] == "CLEAR":
+                self.clear()
+            elif responses[0] == "UPDATE NAME":
+                self.update_name(responses[1])
+
+playerNumber = int(input("Please input player number:"))
+Player = BuzzerPlayer(playerNumber)
 

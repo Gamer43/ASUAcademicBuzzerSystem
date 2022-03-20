@@ -11,7 +11,7 @@ class TCPServer(threading.Thread):
     #receive callback should take two arguments, message (str) and address (tuple)
     def __init__(self, server_ip, port, receive_callback = None, timeout = 5):
         super(TCPServer, self).__init__()
-        
+
         self.sel = selectors.DefaultSelector()
         self.receive_callback = receive_callback
         #initialize the socket.
@@ -22,12 +22,12 @@ class TCPServer(threading.Thread):
         self.sel.register(self.lsock, selectors.EVENT_READ, data=None)
         #events = selectors.EVENT_READ | selectors.EVENT_WRITE
         #data = types.SimpleNamespace(transmitBuffer=b"", receiveBuffer=b"")
-        
+
         #self.sel.register(self.socket, events, data=data)
-        
+
         self.active = True
         self.sendBuffer = deque()
-        
+
         self.connectionDict = {}
 
         self.timeout = timeout
@@ -45,10 +45,9 @@ class TCPServer(threading.Thread):
             recv_data = sock.recv(1024)  # Should be ready to read
             if recv_data:
                 data.receiveBuffer += recv_data
-                if str(data.receiveBuffer).find("#"):
-                    if self.receive_callback:
-                        self.receive_callback(str(data.receiveBuffer, "UTF-8"), data.addr)
-                    data.receiveBuffer = b""
+                if self.receive_callback:
+                    self.receive_callback(str(data.receiveBuffer, "UTF-8"), data.addr)
+                data.receiveBuffer = b""
             else:
                 del(self.connectionDict[data.addr])
                 self.sel.unregister(sock)
@@ -62,7 +61,7 @@ class TCPServer(threading.Thread):
                     data.transmitBuffer = ""
     def send(self, message, addr):
         self.sendBuffer.append((bytes(message, "UTF-8"), addr))
-            
+
      #must be overridden when inheriting form threading.Thread
     def run(self):
         print("Starting TCP Socket")
