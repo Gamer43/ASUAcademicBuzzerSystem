@@ -12,12 +12,12 @@ class BuzzerPlayer():
             self.count = 0
             self.playerNumber = playerNumber
             self.btn = gpiozero.Button(4, hold_time=0.01)
-            self.btn.when_held = self.pressed
+            self.btn.when_held = self.check_buzz
             self.app = guizero.App(title="Player " + str(playerNumber), width = 600, height = 300, bg=MAROON_RGB)
             self.app.when_closed = self.cleanup
-            self.app.set_full_screen()
-            self.name = guizero.Text(self.app, text="Player 1", size=200, font="Calibri", color="white", width = "fill", height = "fill")
-            self.TCPSocket = TCPClient.TCPClient("127.0.0.1", 9000)
+            #self.app.set_full_screen()
+            self.name = guizero.Text(self.app, text="Player " + str(playerNumber), size=200, font="Calibri", color="white", width = "fill", height = "fill")
+            self.TCPSocket = TCPClient.TCPClient("localhost", 9000, self.handle_server_response)
             self.TCPSocket.start()
             self.TCPSocket.send("Player " + str(playerNumber))
             self.app.display()
@@ -49,9 +49,10 @@ class BuzzerPlayer():
             self.app.cancel(self.flash_color)
             self.app.bg = MAROON_RGB
         def check_buzz(self):
+            self.TCPSocket.send("Player " + str(self.playerNumber))
             pass
         def handle_server_response(self, response):
-            pass
+            print(response)
             
 Player = BuzzerPlayer(1)
 

@@ -30,35 +30,34 @@ class TCPClient(threading.Thread):
         sock = key.fileobj
         data = key.data
         if mask & selectors.EVENT_READ:
-            #recv_data = sock.recv(1024)  # Should be ready to read
-            recv_data = b"1"
+            recv_data = sock.recv(1024)  # Should be ready to read
             if recv_data:
                 data.receiveBuffer += recv_data
-                if str(data.receiveBuffer).find("#"):
-                    if self.receive_callback:
-                        self.receive_callback(str(data.receiveBuffer))
-                    data.receiveBuffer = b""
+                if self.receive_callback:
+                    self.receive_callback(str(data.receiveBuffer, "UTF-8"))
+                data.receiveBuffer = b''
             else:
                 self.sel.unregister(sock)
                 sock.close()
         if mask & selectors.EVENT_WRITE:
             if self.sendBuffer:
                 data.transmitBuffer = self.sendBuffer.popleft()
-                #sent = sock.sendall(data.transmitBuffer)  # Should be ready to write
-                print(data.transmitBuffer)
+                sent = sock.sendall(data.transmitBuffer)  # Should be ready to write
+                #print(data.transmitBuffer)
                 data.transmitBuffer = ""
     def send(self, message):
-        self.sendBuffer.append(message)
+        self.sendBuffer.append(bytes(message, encoding="UTF-8"))
             
      #must be overridden when inheriting form threading.Thread
     def run(self):
         print("Starting TCP Socket")
         self.active = True
         while(self.active):
-            events = self.sel.select(timeout=None)
+            events = self.sel.select(timeout=0)
             for key, mask in events:
                 self.service_connection(key, mask)
             time.sleep(0.001)
+        self.socket.close()
         self.sel.close()
     #stops thread execution by modifying state variable
     def stop(self):
