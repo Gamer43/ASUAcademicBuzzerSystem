@@ -1,6 +1,7 @@
 from guizero import *
 from tkinter import colorchooser
 from playsound import playsound
+import TCPServer
 
 class BuzzerHost():
 
@@ -275,6 +276,12 @@ class BuzzerHost():
         "College 1": "This is the long name of College 1",
         "College 2": "This is the long name of College 2"
         }
+        
+        self.TCPServer = TCPServer.TCPServer("0.0.0.0", 9000, self.client_request_callback)
+        self.TCPServer.start()
+        
+        self.addressDict = {}
+        
         self.initGame()
         
         self.app.display()
@@ -282,6 +289,8 @@ class BuzzerHost():
         
     def clear(self):
         self.buzz = False
+        for key in self.addressDict.keys():
+            self.TCPServer.send("CLEAR", self.addressDict[key])
 
 # Define all of the functions
     def gameSettingsFunction(self):
@@ -345,10 +354,13 @@ class BuzzerHost():
 
         self.moderatorTextBox.value = ''
 
-    def updateAll():
+    def updateAll(self):
         #Send all values (text values, fonts, colors) to the respective Pis via TCP
         
         self.player1team1Text = self.p1t1TextBox.value
+        
+        self.TCPServer.send("UPDATE NAME:" + self.player1team1Text, self.addressDict["Player 1"])
+        
         self.player1team1Color = self.playerNameColorPrev.bg
         self.player1team1Background = self.playerBackgroundColorPrev.bg
         
@@ -389,9 +401,11 @@ class BuzzerHost():
         self.timerColor = self.timerColorPrev.bg
         self.timerBackground = self.timerBackgroundColorPrev.bg
 
+        """
         self.team1Name = self.collegeDict[self.team1NameCombo.value]
         self.team2Name = self.collegeDict[self.team2NameCombo.value]
-   
+        """
+        
         self.team1NameColor = self.team1ColorPrev.bg
         self.team1NameBackground = self.team1BackgroundColorPrev.bg
 
@@ -467,6 +481,8 @@ class BuzzerHost():
     def endGame(self):
         endGameYesNo = self.app.yesno("End Game", "You are about to end the game. Are you sure?")
         if endGameYesNo == True:
+            self.TCPServer.stop()
+            self.TCPServer.join()
             self.app.destroy()
    
         
@@ -583,6 +599,15 @@ class BuzzerHost():
         
         self.collegeDict.pop(self.collegeListBox.value)
     #def changeFont(label, font):
+    def client_request_callback(self, request, addr):
+        requests = request.split(":")
+        if requests[0] == "IDENTITY":
+            self.addressDict[requests[1]] = addr
+        elif requests[0] == "BUZZ":
+            if(self.buzz == False):
+                self.buzz = True
+                print("sending buzz")
+                self.TCPServer.send("BUZZ", addr)
 
 
 buzzerHost = BuzzerHost()

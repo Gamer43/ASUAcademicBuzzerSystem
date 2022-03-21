@@ -46,8 +46,8 @@ class TCPServer(threading.Thread):
             if recv_data:
                 data.receiveBuffer += recv_data
                 if self.receive_callback:
-                    self.receive_callback(str(data.receiveBuffer, "UTF-8"), data.addr)
-                data.receiveBuffer = b""
+                    self.receive_callback(data.receiveBuffer.decode("utf-8"), data.addr)
+                data.receiveBuffer = b''
             else:
                 del(self.connectionDict[data.addr])
                 self.sel.unregister(sock)
@@ -58,9 +58,9 @@ class TCPServer(threading.Thread):
                 if self.sendBuffer[0][1] == data.addr:
                     data.transmitBuffer = self.sendBuffer.popleft()[0]
                     sent = sock.send(data.transmitBuffer)  # Should be ready to write
-                    data.transmitBuffer = ""
+                    data.transmitBuffer = b''
     def send(self, message, addr):
-        self.sendBuffer.append((bytes(message, "UTF-8"), addr))
+        self.sendBuffer.append((bytes(message, encoding="utf-8"), addr))
 
      #must be overridden when inheriting form threading.Thread
     def run(self):
