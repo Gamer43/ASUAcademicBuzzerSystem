@@ -29,6 +29,9 @@ class BuzzerTeamScore():
         def update_score(self, valueToAdd):
             self.scoreValue = self.scoreValue + valueToAdd
             self.score.value = self.scoreValue
+        def reset_score(self):
+            self.scoreValue = 0
+            self.score.value = 0
         def update_name(self, newName):
             newName = newName.replace("  ", "\n")
             self.name.value = newName
@@ -38,6 +41,8 @@ class BuzzerTeamScore():
                 self.update_name(responses[1])
             elif responses[0] == "UPDATE SCORE":
                 self.update_score(int(responses[1]))
+            elif responses[0] == "RESET SCORE":
+                self.reset_score()
 
 teamNumber = int(input("Please enter team number:"))
 Score = BuzzerTeamScore(teamNumber)

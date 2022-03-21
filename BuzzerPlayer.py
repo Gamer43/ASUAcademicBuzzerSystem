@@ -50,7 +50,7 @@ class BuzzerPlayer():
             self.app.cancel(self.flash_color)
             self.app.bg = MAROON_RGB
         def check_buzz(self):
-            self.TCPSocket.send("BUZZ")
+            self.TCPSocket.send("BUZZ:" + str(self.playerNumber))
         def handle_server_response(self, response):
             responses = response.split(":")
             if responses[0] == "BUZZ":
