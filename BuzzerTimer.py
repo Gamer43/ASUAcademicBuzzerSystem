@@ -17,7 +17,7 @@ class BuzzerTimer():
             timerValue = time.strftime("%M:%S", time.gmtime(self.count))
             self.app = guizero.App(title="Player", width = 600, height = 300, bg=MAROON_RGB)
             self.app.when_closed = self.cleanup
-            #self.app.set_full_screen()
+            self.app.set_full_screen()
             self.name = guizero.Text(self.app, text=timerValue, size=200, font="Calibri", color="white", width = "fill", height = "fill")
             self.TCPSocket = TCPClient.TCPClient(SERVER_ADDRESS[0], SERVER_ADDRESS[1], receive_callback=self.handle_server_response)
             self.TCPSocket.start()

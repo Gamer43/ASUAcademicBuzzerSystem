@@ -16,7 +16,7 @@ class BuzzerPlayer():
             self.btn.when_held = self.check_buzz
             self.app = guizero.App(title="Player " + str(playerNumber), width = 600, height = 300, bg=MAROON_RGB)
             self.app.when_closed = self.cleanup
-            #self.app.set_full_screen()
+            self.app.set_full_screen()
             self.name = guizero.Text(self.app, text="Player " + str(playerNumber), size=200, font="Calibri", color="white", width = "fill", height = "fill")
             self.TCPSocket = TCPClient.TCPClient(SERVER_ADDRESS[0], SERVER_ADDRESS[1], receive_callback=self.handle_server_response)
             self.TCPSocket.start()
