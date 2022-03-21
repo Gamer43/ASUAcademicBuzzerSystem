@@ -60,7 +60,8 @@ class TCPServer(threading.Thread):
                     sent = sock.send(data.transmitBuffer)  # Should be ready to write
                     data.transmitBuffer = b''
     def send(self, message, addr):
-        self.sendBuffer.append((bytes(message, encoding="utf-8"), addr))
+        if addr:
+            self.sendBuffer.append((bytes(message, encoding="utf-8"), addr))
 
      #must be overridden when inheriting form threading.Thread
     def run(self):
