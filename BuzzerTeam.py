@@ -17,7 +17,7 @@ class BuzzerTeamScore():
             self.app.set_full_screen()
             self.name = guizero.Text(self.app, text="Team " + str(teamNumber), size=200, font="Calibri", color="white", width = "fill", height = "fill")
             self.score = guizero.Text(self.app, text=self.scoreValue, size=200, font="Calibri", color="white", width = "fill", height = "fill")
-            self.TCPSocket = TCPClient.TCPClient(SERVER_ADDRESS[0], SERVER_ADDRESS[1], self.handle_server_response)
+            self.TCPSocket = TCPClient.TCPClient(SERVER_ADDRESS[0], SERVER_ADDRESS[1], receive_callback=self.handle_server_response)
             self.TCPSocket.start()
             self.TCPSocket.send("IDENTITY:Team " + str(teamNumber))
             self.app.display()
