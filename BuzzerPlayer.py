@@ -18,7 +18,7 @@ class BuzzerPlayer():
             self.app.when_closed = self.cleanup
             #self.app.set_full_screen()
             self.name = guizero.Text(self.app, text="Player " + str(playerNumber), size=200, font="Calibri", color="white", width = "fill", height = "fill")
-            self.TCPSocket = TCPClient.TCPClient(SERVER_ADDRESS[0], SERVER_ADDRESS[1], self.handle_server_response)
+            self.TCPSocket = TCPClient.TCPClient(SERVER_ADDRESS[0], SERVER_ADDRESS[1], receive_callback=self.handle_server_response)
             self.TCPSocket.start()
             self.TCPSocket.send("IDENTITY:Player " + str(playerNumber))
             self.app.display()
@@ -52,7 +52,7 @@ class BuzzerPlayer():
         def check_buzz(self):
             self.TCPSocket.send("BUZZ")
         def handle_server_response(self, response):
-            responses = repsonse.split(":")
+            responses = response.split(":")
             if responses[0] == "BUZZ":
                 self.buzz()
             elif responses[0] == "CLEAR":
