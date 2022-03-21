@@ -274,14 +274,18 @@ class BuzzerHost():
         self.resetGameSpacer = Box(self.buttonBox, grid = [5,0], width = 10)
         self.endGameButton = PushButton(self.buttonBox, text = 'End Game', grid = [6,0], align = 'left', command = self.endGame)
 
-        self.collegeDict = {"IRA Fulton": "Ira A. Fulton Schools of Engineering"
+        self.collegeDict = {"IRA Fulton Maroon": "Ira A. Fulton Schools of Engineering Maroon"
+              ,"IRA Fulton Gold": "Ira A. Fulton Schools of Engineering Gold"
               ,"WP Carey": "W. P. Carey School of Business"
-              ,"Sustainability": "School of Sustainability" 
-              ,"Health Solutions": "College of Health Solutions"
+              #,"Sustainability": "School of Sustainability" 
+              #,"Health Solutions": "College of Health Solutions"
               ,"Walter Cronkite" : "Walter Cronkite School of Journalism and Mass Communication"
-              ,"Integrative Science" : "College of Integrative Sciences and Arts"
+              ,"CISA" : "College of Integrative Sciences and Arts"
               ,"Herberger" : "Herberger Institute for Design and Arts"
               ,"Watts College" : "Watts College of Public Service and Commmunity Solutions"
+              ,"The College Maroon": "The College of Liberal Arts and Sciences Maroon"
+              ,"The College Gold": "The College of Liberal Arts and Sciences Gold"
+              ,"Global Futures": "College of Global Futures"
               }
         
         self.TCPServer = TCPServer.TCPServer("0.0.0.0", 9000, self.client_request_callback)
