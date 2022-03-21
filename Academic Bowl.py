@@ -582,7 +582,6 @@ class BuzzerHost():
             playsound('./ding2.mp3', False)
         elif sound == 3:
             playsound('./endGameBuzzerSound.mp3')
-            pass
         print("playing sound")
 
 
