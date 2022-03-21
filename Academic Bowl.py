@@ -274,11 +274,15 @@ class BuzzerHost():
         self.resetGameSpacer = Box(self.buttonBox, grid = [5,0], width = 10)
         self.endGameButton = PushButton(self.buttonBox, text = 'End Game', grid = [6,0], align = 'left', command = self.endGame)
 
-        self.collegeDict =\
-        {
-        "College 1": "This is the long name of College 1",
-        "College 2": "This is the long name of College 2"
-        }
+        self.collegeDict = {"IRA Fulton": "Ira A. Fulton Schools of Engineering"
+              ,"WP Carey": "W. P. Carey School of Business"
+              ,"Sustainability": "School of Sustainability" 
+              ,"Health Solutions": "College of Health Solutions"
+              ,"Walter Cronkite" : "Walter Cronkite School of Journalism and Mass Communication"
+              ,"Integrative Science" : "College of Integrative Sciences and Arts"
+              ,"Herberger" : "Herberger Institute for Design and Arts"
+              ,"Watts College" : "Watts College of Public Service and Commmunity Solutions"
+              }
         
         self.TCPServer = TCPServer.TCPServer("0.0.0.0", 9000, self.client_request_callback)
         self.TCPServer.start()
@@ -339,7 +343,12 @@ class BuzzerHost():
         self.team2IncorrectButton.text_color = 'Red'
         self.gameSettingsWindow.hide()
         
-        #self.app.full_screen = True
+        for key in self.collegeDict:
+            self.collegeListBox.append(key)
+            self.team1NameCombo.append(key)
+            self.team2NameCombo.append(key)
+        
+        self.app.full_screen = True
     
     
 
@@ -572,7 +581,7 @@ class BuzzerHost():
         elif sound == 2:
             playsound('./ding2.mp3', False)
         elif sound == 3:
-            #playsound('./ding3.mp3')
+            playsound('./endGameBuzzerSound.mp3')
             pass
         print("playing sound")
 
