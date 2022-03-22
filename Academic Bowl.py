@@ -274,17 +274,17 @@ class BuzzerHost():
         self.resetGameSpacer = Box(self.buttonBox, grid = [5,0], width = 10)
         self.endGameButton = PushButton(self.buttonBox, text = 'End Game', grid = [6,0], align = 'left', command = self.endGame)
 
-        self.collegeDict = {"IRA Fulton Maroon": "Ira A. Fulton Schools of Engineering Maroon"
-              ,"IRA Fulton Gold": "Ira A. Fulton Schools of Engineering Gold"
-              ,"WP Carey": "W. P. Carey School of Business"
+        self.collegeDict = {"IRA Fulton Maroon": "Ira A. Fulton  Schools of Engineering Maroon"
+              ,"IRA Fulton Gold": "Ira A. Fulton  Schools of Engineering Gold"
+              ,"WP Carey": "W. P. Carey  School of Business"
               #,"Sustainability": "School of Sustainability" 
               #,"Health Solutions": "College of Health Solutions"
-              ,"Walter Cronkite" : "Walter Cronkite School of Journalism and Mass Communication"
-              ,"CISA" : "College of Integrative Sciences and Arts"
-              ,"Herberger" : "Herberger Institute for Design and Arts"
-              ,"Watts College" : "Watts College of Public Service and Commmunity Solutions"
-              ,"The College Maroon": "The College of Liberal Arts and Sciences Maroon"
-              ,"The College Gold": "The College of Liberal Arts and Sciences Gold"
+              ,"Walter Cronkite" : "Walter Cronkite School of  Journalism and  Mass Communication"
+              ,"CISA" : "College of  Integrative Sciences and Arts"
+              ,"Herberger" : "Herberger  Institute for Design and Arts"
+              ,"Watts College" : "Watts College of  Public Service and  Commmunity Solutions"
+              ,"The College Maroon": "The College of  Liberal Arts and Sciences Maroon"
+              ,"The College Gold": "The College of  Liberal Arts and Sciences Gold"
               ,"Global Futures": "College of Global Futures"
               }
         
@@ -292,7 +292,7 @@ class BuzzerHost():
         self.TCPServer.start()
         
         self.addressDict = {}
-        
+                
         self.initGame()
         
         self.app.display()
@@ -302,7 +302,8 @@ class BuzzerHost():
         self.buzz = False
         for key in self.addressDict.keys():
             self.TCPServer.send("CLEAR", self.addressDict[key])
-
+            
+  
 # Define all of the functions
     def gameSettingsFunction(self):
         self.gameSettingsWindow.show()
@@ -377,8 +378,8 @@ class BuzzerHost():
         #self.addPointTextBox.value = ''
         #self.subPointTextBox.value = ''
 
-        #self.minuteTextBox.value = ''
-        #self.secondTextBox.value = ''
+        self.minuteTextBox.value = '15'
+        self.secondTextBox.value = '0'
 
         #self.moderatorTextBox.value = ''
 
@@ -461,7 +462,7 @@ class BuzzerHost():
         self.team2Name = self.collegeDict[self.team2NameCombo.value]
         
         self.TCPServer.send("UPDATE NAME:" + str(self.team1Name), self.addressDict.get("Team 1"))
-        self.TCPServer.send("UPDATE NAME:" + str(self.team1Name), self.addressDict.get("Team 2"))
+        self.TCPServer.send("UPDATE NAME:" + str(self.team2Name), self.addressDict.get("Team 2"))
         
         self.team1NameColor = self.team1ColorPrev.bg
         self.team1NameBackground = self.team1BackgroundColorPrev.bg
