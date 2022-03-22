@@ -33,9 +33,13 @@ class TCPClient(threading.Thread):
             recv_data = sock.recv(1024)  # Should be ready to read
             if recv_data:
                 data.receiveBuffer += recv_data
-                if self.receive_callback:
-                    print(recv_data)
-                    self.receive_callback(data.receiveBuffer.decode("utf-8"))
+                start = data.receiveBuffer.find(b"$")
+                end = data.receiveBuffer.find(b"#")
+                if  start >= 0 and  end > 0 and end > start:
+                    data.receiveBuffer = data.receiveBuffer[start + 1:end]
+                    if self.receive_callback:
+                        print(recv_data)
+                        self.receive_callback(data.receiveBuffer.decode("utf-8"))
                 data.receiveBuffer = b''
             else:
                 self.sel.unregister(sock)
@@ -47,6 +51,7 @@ class TCPClient(threading.Thread):
                 #print(data.transmitBuffer)
                 data.transmitBuffer = b''
     def send(self, message):
+        message = "$" + message + "#"
         self.sendBuffer.append(bytes(message, encoding="utf-8"))
 
      #must be overridden when inheriting form threading.Thread

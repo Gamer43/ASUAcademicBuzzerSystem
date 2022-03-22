@@ -45,8 +45,12 @@ class TCPServer(threading.Thread):
             recv_data = sock.recv(1024)  # Should be ready to read
             if recv_data:
                 data.receiveBuffer += recv_data
-                if self.receive_callback:
-                    self.receive_callback(data.receiveBuffer.decode("utf-8"), data.addr)
+                start = data.receiveBuffer.find(b"$")
+                end = data.receiveBuffer.find(b"#")
+                if  start >= 0 and  end > 0 and end > start:
+                    data.receiveBuffer = data.receiveBuffer[start + 1:end]
+                    if self.receive_callback:
+                        self.receive_callback(data.receiveBuffer.decode("utf-8"), data.addr)
                 data.receiveBuffer = b''
             else:
                 del(self.connectionDict[data.addr])
@@ -60,6 +64,7 @@ class TCPServer(threading.Thread):
                     sent = sock.send(data.transmitBuffer)  # Should be ready to write
                     data.transmitBuffer = b''
     def send(self, message, addr):
+        message = "$" + message + "#"
         if addr:
             self.sendBuffer.append((bytes(message, encoding="utf-8"), addr))
 
