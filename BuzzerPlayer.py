@@ -12,8 +12,8 @@ class BuzzerPlayer():
         def __init__(self, playerNumber):
             self.count = 0
             self.playerNumber = playerNumber
-            self.btn = gpiozero.Button(4, hold_time=0.01)
-            self.btn.when_held = self.check_buzz
+            self.btn = gpiozero.Button(4)
+            self.btn.when_pressed = self.check_buzz
             self.app = guizero.App(title="Player " + str(playerNumber), width = 600, height = 300, bg=MAROON_RGB)
             self.app.when_closed = self.cleanup
             self.app.set_full_screen()
