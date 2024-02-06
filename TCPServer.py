@@ -59,7 +59,10 @@ class TCPServer(threading.Thread):
                 print("Closing Connection at: " + str(data.addr))
         if mask & selectors.EVENT_WRITE:
             if self.sendBuffer:
-                if self.sendBuffer[0][1] == data.addr:
+                dest_addr = self.sendBuffer[0][1]
+                if self.connectionDict[dest_addr] == None:
+                    self.sendBuffer.popleft()[0]
+                elif dest_addr == data.addr:
                     data.transmitBuffer = self.sendBuffer.popleft()[0]
                     sent = sock.send(data.transmitBuffer)  # Should be ready to write
                     data.transmitBuffer = b''
