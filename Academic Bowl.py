@@ -207,7 +207,7 @@ class BuzzerHost():
         self.buzzerCommandSpacer1 = Box(self.gameButtonsTitleBox, height = 50)
         self.updateButton = PushButton(self.gameButtonsTitleBox, text = 'Update', align = 'top', width = 20, command = self.updateAll)
         self.buzzerCommandSpacer2 = Box(self.gameButtonsTitleBox, height = 50)
-        self.clearButton = PushButton(self.gameButtonsTitleBox, text = 'Clear Buzzer', align = 'top', width = 20, command = self.clear)
+        self.clearButton = PushButton(self.gameButtonsTitleBox, text = 'Clear Buzzer', align = 'top', width = 20, command = self.clear_manual)
 
 
         # Team 2 Team and player names with text boxes and font buttons
@@ -274,19 +274,21 @@ class BuzzerHost():
         self.resetGameSpacer = Box(self.buttonBox, grid = [5,0], width = 10)
         self.endGameButton = PushButton(self.buttonBox, text = 'End Game', grid = [6,0], align = 'left', command = self.endGame)
 
-        self.collegeDict = {"IRA Fulton Maroon": "Ira A. Fulton  Schools of Engineering Maroon"
-              ,"IRA Fulton Gold": "Ira A. Fulton  Schools of Engineering Gold"
-              ,"WP Carey": "W. P. Carey  School of Business"
-              #,"Sustainability": "School of Sustainability" 
-              #,"Health Solutions": "College of Health Solutions"
-              ,"Walter Cronkite" : "Walter Cronkite School of  Journalism and  Mass Communication"
-              ,"CISA" : "College of  Integrative Sciences and Arts"
-              ,"Herberger" : "Herberger  Institute for Design and Arts"
-              ,"Watts College" : "Watts College of  Public Service and  Commmunity Solutions"
-              ,"The College Maroon": "The College of  Liberal Arts and Sciences Maroon"
-              ,"The College Gold": "The College of  Liberal Arts and Sciences Gold"
-              ,"Global Futures": "College of Global Futures"
-              }
+        self.collegeDict = {
+            "IRA Fulton Maroon": "Ira A. Fulton  Schools of Engineering  Maroon",
+            "IRA Fulton Gold": "Ira A. Fulton  Schools of Engineering  Gold",
+            "WP Carey Maroon": "W. P. Carey  School of Business  Maroon",
+            "WP Carey Gold": "W. P. Carey  School of Business  Gold",
+            #"Sustainability": "School of Sustainability",
+            #"Health Solutions": "College of Health Solutions",
+            #"Walter Cronkite" : "Walter Cronkite School of  Journalism and  Mass Communication",
+            "CISA" : "College of  Integrative Sciences and Arts",
+            #"Herberger" : "Herberger  Institute for Design and Arts",
+            #"Watts College" : "Watts College of  Public Service and  Commmunity Solutions",
+            "The College Maroon": "The College of  Liberal Arts and Sciences  Maroon",
+            "The College Gold": "The College of  Liberal Arts and Sciences  Gold",
+            "Global Futures": "College of Global Futures"
+        }
         
         self.TCPServer = TCPServer.TCPServer("0.0.0.0", 9000, self.client_request_callback)
         self.TCPServer.start()
@@ -297,7 +299,9 @@ class BuzzerHost():
         
         self.app.display()
 
-        
+    def clear_manual(self):
+        self.app.cancel(self.buzz_timeout)
+        self.clear()
     def clear(self):
         self.buzz = False
         for key in self.addressDict.keys():
@@ -380,6 +384,11 @@ class BuzzerHost():
 
         self.minuteTextBox.value = '15'
         self.secondTextBox.value = '0'
+        
+        self.timerMinuteText = self.minuteTextBox.value
+        self.timerSecondText = self.secondTextBox.value
+        totalTime = (int(self.timerMinuteText) * 60) + int(self.timerSecondText)
+        self.TCPServer.send("SET TIME:" + str(totalTime), self.addressDict.get("Timer"))
 
         #self.moderatorTextBox.value = ''
 
@@ -586,7 +595,9 @@ class BuzzerHost():
         elif sound == 2:
             playsound('./ding2.mp3', False)
         elif sound == 3:
-            playsound('./endGameBuzzerSound.mp3')
+            playsound('./endGameBuzzerSound.mp3', False)
+        elif sound == 4:
+            playsound('./timeOutSound.mp3', False)
         print("playing sound")
 
 
@@ -669,8 +680,11 @@ class BuzzerHost():
                     self.playSound(2)
                 else:
                     self.playSound(1)
+                self.app.after(10000, self.buzz_timeout)
         elif requests[0] == "TIMEOUT":
             self.playSound(3)
-
+    def buzz_timeout(self):
+        self.playSound(4)
+        self.clear()
 
 buzzerHost = BuzzerHost()
