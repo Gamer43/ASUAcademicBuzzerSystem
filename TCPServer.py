@@ -60,7 +60,7 @@ class TCPServer(threading.Thread):
         if mask & selectors.EVENT_WRITE:
             if self.sendBuffer:
                 dest_addr = self.sendBuffer[0][1]
-                if self.connectionDict[dest_addr] == None:
+                if self.connectionDict.get(dest_addr) == None:
                     self.sendBuffer.popleft()[0]
                 elif dest_addr == data.addr:
                     data.transmitBuffer = self.sendBuffer.popleft()[0]

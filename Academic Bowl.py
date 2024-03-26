@@ -1,6 +1,9 @@
 from guizero import *
 from tkinter import colorchooser
 from playsound import playsound
+from pydub import AudioSegment
+from pydub.playback import play
+import threading
 import TCPServer
 
 
@@ -13,8 +16,14 @@ class BuzzerHost():
     # Initialize the window and app
         self.buzz = False
         self.app = App(title="Control Panel", width = 1100, height = 720)
+
+        #export the sounds
+        self.ding1 = AudioSegment.from_mp3("./ding.mp3")
+        self.ding2 = AudioSegment.from_mp3("./ding2.mp3")
+        self.endsound = AudioSegment.from_mp3("./endGameBuzzerSound.mp3")
+
         #****************************************************************
-        # Need to create for loop that listens for Buzzes 
+        # Need to create for loop that listens for Buzzes
         # If buzzer received, execute buzz event (play sound and change background of player that buzzed in first)
         # Do not execute any other buzz events until clear buzzer function has been executed
 
@@ -142,7 +151,7 @@ class BuzzerHost():
                                                                         ])
 
 
-        #Title Box 
+        #Title Box
         self.titleBox = Box(self.app, align = 'top', width = 'fill', height = 50)
         self.titleLabel = Text(self.titleBox, text = 'Academic Bowl Control Panel', size = 18)
 
@@ -289,30 +298,30 @@ class BuzzerHost():
             "The College Gold": "The College of  Liberal Arts and Sciences  Gold",
             "Global Futures": "College of Global Futures"
         }
-        
         self.TCPServer = TCPServer.TCPServer("0.0.0.0", 9000, self.client_request_callback)
         self.TCPServer.start()
-        
+
         self.addressDict = {}
-                
+
         self.initGame()
-        
+
         self.app.display()
 
     def clear_manual(self):
         self.app.cancel(self.buzz_timeout)
         self.clear()
+
     def clear(self):
         self.buzz = False
         for key in self.addressDict.keys():
             self.TCPServer.send("CLEAR", self.addressDict[key])
-            
-  
+
+
 # Define all of the functions
     def gameSettingsFunction(self):
         self.gameSettingsWindow.show()
 
-    def initGame(self): 
+    def initGame(self):
         self.startGameButton.text_size = 16
         self.endGameButton.text_size = 16
         self.pauseGameButton.text_size = 16
@@ -323,10 +332,10 @@ class BuzzerHost():
         self.team1IncorrectButton.text_size = 12
         self.team2CorrectButton.text_size = 12
         self.team2IncorrectButton.text_size = 12
-        
+
         self.minuteTextBox.value = 15
         self.secondTextBox.value = 0
-        
+
         self.addPointTextBox.value = 10
         self.subPointTextBox.value = 5
 
@@ -351,18 +360,18 @@ class BuzzerHost():
         self.team1IncorrectButton.text_color = 'Red'
         self.team2IncorrectButton.text_color = 'Red'
         self.gameSettingsWindow.hide()
-        
+
         for key in self.collegeDict:
             self.collegeListBox.append(key)
             self.team1NameCombo.append(key)
             self.team2NameCombo.append(key)
-        
+
         self.app.full_screen = True
-    
-    
 
 
-    
+
+
+
 
     def resetFields(self):
         self.p1t1TextBox.value = ''
@@ -374,7 +383,7 @@ class BuzzerHost():
         self.p2t2TextBox.value = ''
         self.p3t2TextBox.value = ''
         self.p4t2TextBox.value = ''
-        
+
         self.TCPServer.send("RESET SCORE", self.addressDict.get("Team 1"))
         self.TCPServer.send("RESET SCORE", self.addressDict.get("Team 2"))
 
@@ -384,7 +393,7 @@ class BuzzerHost():
 
         self.minuteTextBox.value = '15'
         self.secondTextBox.value = '0'
-        
+
         self.timerMinuteText = self.minuteTextBox.value
         self.timerSecondText = self.secondTextBox.value
         totalTime = (int(self.timerMinuteText) * 60) + int(self.timerSecondText)
@@ -394,65 +403,65 @@ class BuzzerHost():
 
     def updateAll(self):
         #Send all values (text values, fonts, colors) to the respective Pis via TCP
-        
+
         self.player1team1Text = self.p1t1TextBox.value
-        
+
         self.TCPServer.send("UPDATE NAME:" + self.player1team1Text, self.addressDict.get("Player 1"))
-        
+
         self.player1team1Color = self.playerNameColorPrev.bg
         self.player1team1Background = self.playerBackgroundColorPrev.bg
-        
+
         self.player2team1Text = self.p2t1TextBox.value
-        
+
         self.TCPServer.send("UPDATE NAME:" + self.player2team1Text, self.addressDict.get("Player 2"))
 
         self.player2team1Color = self.playerNameColorPrev.bg
         self.player2team1Background = self.playerBackgroundColorPrev.bg
 
         self.player3team1Text = self.p3t1TextBox.value
-        
+
         self.TCPServer.send("UPDATE NAME:" + self.player3team1Text, self.addressDict.get("Player 3"))
-        
+
         self.player3team1Color = self.playerNameColorPrev.bg
         self.player3team1Background = self.playerBackgroundColorPrev.bg
 
         self.player4team1Text = self.p4t1TextBox.value
-        
+
         self.TCPServer.send("UPDATE NAME:" + self.player4team1Text, self.addressDict.get("Player 4"))
-        
+
         self.player4team1Color = self.playerNameColorPrev.bg
         self.player4team1Background = self.playerBackgroundColorPrev.bg
 
         self.player1team2Text = self.p1t2TextBox.value
-        
+
         self.TCPServer.send("UPDATE NAME:" + self.player1team2Text, self.addressDict.get("Player 5"))
-        
+
         self.player1team2Color = self.playerNameColorPrev.bg
         self.player1team2Background = self.playerBackgroundColorPrev.bg
 
         self.player2team2Text = self.p2t2TextBox.value
-        
+
         self.TCPServer.send("UPDATE NAME:" + self.player2team2Text, self.addressDict.get("Player 6"))
-        
+
         self.player2team2Color = self.playerNameColorPrev.bg
         self.player2team2Background = self.playerBackgroundColorPrev.bg
 
         self.player3team2Text = self.p3t2TextBox.value
-                
+
         self.TCPServer.send("UPDATE NAME:" + self.player3team2Text, self.addressDict.get("Player 7"))
-        
+
         self.player3team2Color = self.playerNameColorPrev.bg
         self.player3team2Background = self.playerBackgroundColorPrev.bg
 
         self.player4team2Text = self.p4t2TextBox.value
-        
+
         self.TCPServer.send("UPDATE NAME:" + self.player4team2Text, self.addressDict.get("Player 8"))
 
         self.player4team2Color = self.playerNameColorPrev.bg
         self.player4team2Background = self.playerBackgroundColorPrev.bg
 
         self.moderatorText = self.moderatorTextBox.value
-        
+
         self.TCPServer.send("UPDATE NAME:" + self.moderatorText, self.addressDict.get("Player 0"))
 
         self.moderatorColor = self.playerNameColorPrev.bg
@@ -462,23 +471,23 @@ class BuzzerHost():
         self.timerSecondText = self.secondTextBox.value
         self.timerColor = self.timerColorPrev.bg
         self.timerBackground = self.timerBackgroundColorPrev.bg
-        
+
         totalTime = (int(self.timerMinuteText) * 60) + int(self.timerSecondText)
-        
+
         self.TCPServer.send("SET TIME:" + str(totalTime), self.addressDict.get("Timer"))
 
         self.team1Name = self.collegeDict[self.team1NameCombo.value]
         self.team2Name = self.collegeDict[self.team2NameCombo.value]
-        
+
         self.TCPServer.send("UPDATE NAME:" + str(self.team1Name), self.addressDict.get("Team 1"))
         self.TCPServer.send("UPDATE NAME:" + str(self.team2Name), self.addressDict.get("Team 2"))
-        
+
         self.team1NameColor = self.team1ColorPrev.bg
         self.team1NameBackground = self.team1BackgroundColorPrev.bg
 
         self.team2NameColor = self.team2ColorPrev.bg
         self.team2NameBackground = self.team2BackgroundColorPrev.bg
-        
+
         # Send all values above to each of the Pis via TCP
 
 
@@ -486,7 +495,7 @@ class BuzzerHost():
         # Disable the functionality of textboxes and buttons
         # Exclude resume, pause, correct and incorrect buttons
         self.moderatorTextBox.disable()
-        
+
         self.team1NameCombo.disable()
         self.team2NameCombo.disable()
         self.p1t1TextBox.disable()
@@ -508,7 +517,7 @@ class BuzzerHost():
 
         self.addPointTextBox.disable()
         self.subPointTextBox.disable()
-        
+
         self.TCPServer.send("START", self.addressDict.get("Timer"))
 
         # Start timer
@@ -538,14 +547,14 @@ class BuzzerHost():
 
         self.addPointTextBox.enable()
         self.subPointTextBox.enable()
-        
+
         self.TCPServer.send("PAUSE", self.addressDict.get("Timer"))
 
 
         # stop timer
 
 
-    
+
 
     def endGame(self):
         endGameYesNo = self.app.yesno("End Game", "You are about to end the game. Are you sure?")
@@ -553,8 +562,8 @@ class BuzzerHost():
             self.TCPServer.stop()
             self.TCPServer.join()
             self.app.destroy()
-   
-        
+
+
 
     def correctAnswer(self, team):
         # Add points to team that answered correctly
@@ -566,14 +575,14 @@ class BuzzerHost():
             self.TCPServer.send("UPDATE SCORE:" + str(correctValue), self.addressDict.get("Team " + str(team)))
         except ValueError:
             self.app.warn("Invalid Input", "Please enter a number")
-        
-    
+
+
 
     def incorrectAnswer(self, team):
         # Subtract points to team that answered correctly
         # Point value is based on what the user entered in the text box
         # The points go from the team that is specified by the passed parameter
-        
+
         try:
             incorrectValue = int(self.subPointTextBox.value)
             incorrectValue = -incorrectValue
@@ -584,15 +593,19 @@ class BuzzerHost():
 
 #def decreaseFont(team, player):
     # Decrease font size of player/moderator by x amount via TCP (Send new value = current value - x)
-    
+
 
 #def increaseFont(team, player):
     # Increase font size of player/moderator by x amount via TCP (Send new value = current value + x)
 
     def playSound(self, sound):
         if sound == 1:
+            #t = threading.Thread(target=play, args=(self.ding1,))
+            #t.start()
             playsound('./ding.mp3', False)
         elif sound == 2:
+            #t = threading.Thread(target=play, args=(self.ding2,))
+            #t.start()
             playsound('./ding2.mp3', False)
         elif sound == 3:
             playsound('./endGameBuzzerSound.mp3', False)
@@ -605,8 +618,8 @@ class BuzzerHost():
         colorChooser = colorchooser.askcolor()[1]
         self.gameSettingsWindow.focus()
         colorBox.bg = colorChooser
-        
-        #Send the color that was chosen to the appropriate Pi 
+
+        #Send the color that was chosen to the appropriate Pi
         if entity == "player" and type == "text":
             print("Change player name text color")
             print(colorChooser)
@@ -637,22 +650,22 @@ class BuzzerHost():
         elif entity == "team2score" and type == "text":
             print("Change team2score text color")
             print(colorChooser)
-    
+
     def saveAndExit(self):
         self.gameSettingsWindow.hide()
-    
+
     def selectLogoFile(self):
         logoFile = self.app.select_file()
         self.gameSettingsWindow.focus()
         logoFileSplit = logoFile.split('/')
         self.selectLogoButton.text = logoFileSplit[-1]
-    
-    
+
+
     def insertCollege(self):
         self.team1NameCombo.append(self.shortTeamNameTextBox.value)
         self.team2NameCombo.append(self.shortTeamNameTextBox.value)
         self.collegeListBox.append(self.shortTeamNameTextBox.value)
-        
+
         self.collegeDict[self.shortTeamNameTextBox.value] = self.displayedTeamNameTextBox.value
 
         #****Need to send color to player Pi over TCP and change player color
@@ -663,7 +676,7 @@ class BuzzerHost():
         self.team2NameCombo.remove(self.collegeListBox.value)
         del self.collegeDict[self.collegeListBox.value]
         self.collegeListBox.remove(self.collegeListBox.value)
-        
+
     #def changeFont(label, font):
     def client_request_callback(self, request, addr):
         requests = request.split(":")
@@ -671,7 +684,7 @@ class BuzzerHost():
             self.addressDict[requests[1]] = addr
         elif requests[0] == "BUZZ":
             if(self.buzz == False):
-                playerNumber = int(requests[1])             
+                playerNumber = int(requests[1])
                 self.buzz = True
                 print("sending buzz")
                 self.TCPServer.send("BUZZ", addr)
