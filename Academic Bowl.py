@@ -599,19 +599,22 @@ class BuzzerHost():
     # Increase font size of player/moderator by x amount via TCP (Send new value = current value + x)
 
     def playSound(self, sound):
-        if sound == 1:
-            #t = threading.Thread(target=play, args=(self.ding1,))
-            #t.start()
-            playsound('./ding.mp3', False)
-        elif sound == 2:
-            #t = threading.Thread(target=play, args=(self.ding2,))
-            #t.start()
-            playsound('./ding2.mp3', False)
-        elif sound == 3:
-            playsound('./endGameBuzzerSound.mp3', False)
-        elif sound == 4:
-            playsound('./timeOutSound.mp3', False)
-        print("playing sound")
+        try:
+            if sound == 1:
+                #t = threading.Thread(target=play, args=(self.ding1,))
+                #t.start()
+                playsound('./ding.wav', False)
+            elif sound == 2:
+                #t = threading.Thread(target=play, args=(self.ding2,))
+                #t.start()
+                playsound('./ding2.wav', False)
+            elif sound == 3:
+                playsound('./endGameBuzzerSound.wav', False)
+            elif sound == 4:
+                playsound('./timeOutSound.wav', False)
+            print("playing sound")
+        except Exception as e:
+            print("playsound error" + str(e))
 
 
     def changeTextColor(self, entity, type, colorBox):
