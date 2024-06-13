@@ -11,3 +11,4 @@ Have host program automatically play inaudible audio on loop
 Set up startup script on rasperry pis to disable screen blanking
 Set up automatic reconnect on client applications
 Add a clear score button to host program
+Find a suitable reliable, tactile pushbutton, suggested: IPR3SAD6
