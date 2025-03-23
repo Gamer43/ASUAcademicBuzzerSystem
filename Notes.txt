@@ -1,14 +1,14 @@
 NOTES:
-Need to play inaudible audio file on loop on main host computer to eliminate buzzer sound delay. This is likely due to the soundcard on the computer being put to sleep by windows, not entirely sure.
+Need to play inaudible audio file on loop on main host computer to eliminate buzzer sound delay. This is the power amplifiers on the sound system going to sleep
 Need to run a set of terminal commands on Raspberry Pis to disable screen blanking
 Server can tolerate client disconnect and reconnect, but clients cannot tolerate server disconnect, and clients that disconnect must be restarted
 Use player 0 for the moderator
 Use two spaces to insert line break for displaying names
 Change the incorrect score value to rapidly reset scores
 TODO:
-Set up Raspberry Pis to track the remote repository as they currently hold copies of the relevant application
+Set up Raspberry Pis to track the remote repository
 Have host program automatically play inaudible audio on loop
-Set up startup script on rasperry pis to disable screen blanking
+Set up startup script on rasperry pis to disable screen blanking see: forums.raspberrypi.com/viewtopic.php?t=219854
 Set up automatic reconnect on client applications
 Add a clear score button to host program
-Find a suitable reliable, tactile pushbutton, suggested: IPR3SAD6
+Find a suitable reliable, tactile pushbutton. DONE: PB6B2FM3M1CAL03. Has LED, 1kOhm. Check thread adapters
