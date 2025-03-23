@@ -5,6 +5,8 @@ Server can tolerate client disconnect and reconnect, but clients cannot tolerate
 Use player 0 for the moderator
 Use two spaces to insert line break for displaying names
 Change the incorrect score value to rapidly reset scores
+Start host first, then clients
+Header plugs into pin numbers 9,11,13. Black, Red, White, Respectively. These are GND, GPIO17, GPIO22.
 TODO:
 Set up Raspberry Pis to track the remote repository
 Have host program automatically play inaudible audio on loop
