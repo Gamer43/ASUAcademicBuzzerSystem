@@ -7,12 +7,17 @@ MAROON_RGB = "#B03060"
 GOLD_RGB = "#FFD700"
 SERVER_ADDRESS = ("192.168.0.30", 9000)
 
+LED_GPIO = 17
+BUTTON_GPIO = 27
+
 
 class BuzzerPlayer():
         def __init__(self, playerNumber):
             self.count = 0
             self.playerNumber = playerNumber
-            self.btn = gpiozero.Button(4)
+            #button pullup enabled by default, pass kwarg pull_up=false to set pulldown
+            self.btn = gpiozero.Button(BUTTON_GPIO)
+            self.led = gpiozero.LED(LED_GPIO)
             self.btn.when_pressed = self.check_buzz
             self.app = guizero.App(title="Player " + str(playerNumber), width = 600, height = 300, bg=MAROON_RGB)
             self.app.when_closed = self.cleanup
@@ -46,9 +51,11 @@ class BuzzerPlayer():
             self.name.value = newName
         def buzz(self):
             self.app.repeat(500, self.flash_color)
+            self.led.on()
         def clear(self):
             self.app.cancel(self.flash_color)
             self.app.bg = MAROON_RGB
+            self.led.off()
         def check_buzz(self):
             self.TCPSocket.send("BUZZ:" + str(self.playerNumber))
         def handle_server_response(self, response):
