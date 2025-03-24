@@ -6,18 +6,21 @@ import TCPClient
 MAROON_RGB = "#B03060"
 GOLD_RGB = "#FFD700"
 SERVER_ADDRESS = ("192.168.0.30", 9000)
+SERVER_PORT = 9000
+
 
 
 class BuzzerTeamScore():
-        def __init__(self, teamNumber):
+        def __init__(self, teamNumber, serverIP):
             self.teamNumber = teamNumber
+            self.serverIP = serverIP
             self.scoreValue = 0
             self.app = guizero.App(title="Player", width = 600, height = 300, bg=MAROON_RGB, layout="vertical")
             self.app.when_closed = self.cleanup
             self.app.set_full_screen()
             self.name = guizero.Text(self.app, text="Team " + str(teamNumber), size=200, font="Calibri", color="white", width = "fill", height = "fill")
             self.score = guizero.Text(self.app, text=self.scoreValue, size=200, font="Calibri", color="white", width = "fill", height = "fill")
-            self.TCPSocket = TCPClient.TCPClient(SERVER_ADDRESS[0], SERVER_ADDRESS[1], receive_callback=self.handle_server_response)
+            self.TCPSocket = TCPClient.TCPClient(serverIP, SERVER_PORT, receive_callback=self.handle_server_response)
             self.TCPSocket.start()
             self.TCPSocket.send("IDENTITY:Team " + str(teamNumber))
             self.app.display()
@@ -45,5 +48,7 @@ class BuzzerTeamScore():
                 self.reset_score()
 
 teamNumber = int(input("Please enter team number:"))
-Score = BuzzerTeamScore(teamNumber)
+serverIP = input("Please input server IP address:")
+
+Score = BuzzerTeamScore(teamNumber, serverIP)
 

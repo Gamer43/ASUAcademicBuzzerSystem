@@ -8,10 +8,13 @@ MAROON_RGB = "#B03060"
 GOLD_RGB = "#FFD700"
 
 SERVER_ADDRESS = ("192.168.0.30", 9000)
+SERVER_PORT = 9000
+
 
 
 class BuzzerTimer():
-        def __init__(self):
+        def __init__(self, serverIP):
+            self.serverIP = serverIP
             self.count = 900
             self.timeoutSend = False
             timerValue = time.strftime("%M:%S", time.gmtime(self.count))
@@ -19,7 +22,7 @@ class BuzzerTimer():
             self.app.when_closed = self.cleanup
             self.app.set_full_screen()
             self.name = guizero.Text(self.app, text=timerValue, size=200, font="Calibri", color="white", width = "fill", height = "fill")
-            self.TCPSocket = TCPClient.TCPClient(SERVER_ADDRESS[0], SERVER_ADDRESS[1], receive_callback=self.handle_server_response)
+            self.TCPSocket = TCPClient.TCPClient(serverIP, SERVER_PORT, receive_callback=self.handle_server_response)
             self.TCPSocket.start()
             self.TCPSocket.send("IDENTITY:Timer")
             self.app.display()
@@ -62,4 +65,5 @@ class BuzzerTimer():
                 self.set_timer_value(int(responses[1]))
             elif responses[0] == "ADD TIME":
                 self.add_time(int(responses[1]))
-Timer = BuzzerTimer()
+serverIP = input("Please input server IP address")
+Timer = BuzzerTimer(serverIP)

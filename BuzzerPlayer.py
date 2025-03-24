@@ -6,15 +6,16 @@ import TCPClient
 MAROON_RGB = "#B03060"
 GOLD_RGB = "#FFD700"
 SERVER_ADDRESS = ("192.168.0.30", 9000)
-
+SERVER_PORT = 9000
 LED_GPIO = 17
 BUTTON_GPIO = 27
 
 
 class BuzzerPlayer():
-        def __init__(self, playerNumber):
+        def __init__(self, playerNumber, serverIP):
             self.count = 0
             self.playerNumber = playerNumber
+            self.serverIP = serverIP
             #button pullup enabled by default, pass kwarg pull_up=false to set pulldown
             self.btn = gpiozero.Button(BUTTON_GPIO)
             self.led = gpiozero.LED(LED_GPIO)
@@ -23,7 +24,7 @@ class BuzzerPlayer():
             self.app.when_closed = self.cleanup
             self.app.set_full_screen()
             self.name = guizero.Text(self.app, text="Player " + str(playerNumber), size=200, font="Calibri", color="white", width = "fill", height = "fill")
-            self.TCPSocket = TCPClient.TCPClient(SERVER_ADDRESS[0], SERVER_ADDRESS[1], receive_callback=self.handle_server_response)
+            self.TCPSocket = TCPClient.TCPClient(serverIP, SERVER_PORT, receive_callback=self.handle_server_response)
             self.TCPSocket.start()
             self.TCPSocket.send("IDENTITY:Player " + str(playerNumber))
             self.app.display()
@@ -68,5 +69,6 @@ class BuzzerPlayer():
                 self.update_name(responses[1])
 
 playerNumber = int(input("Please input player number:"))
-Player = BuzzerPlayer(playerNumber)
+serverIP = input("Please input server IP address:")
+Player = BuzzerPlayer(playerNumber, serverIP)
 
