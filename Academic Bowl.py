@@ -27,7 +27,6 @@ class BuzzerHost():
         # If buzzer received, execute buzz event (play sound and change background of player that buzzed in first)
         # Do not execute any other buzz events until clear buzzer function has been executed
 
-
         self.gameSettingsWindow = Window(self.app, title = "Game Settings", width = 800, height = 550, layout = 'grid')
 
         self.gameSettingsBox1 = Box(self.gameSettingsWindow, align = 'top', width = 'fill', height = 'fill', grid = [0,0,5,1])
@@ -87,13 +86,9 @@ class BuzzerHost():
         self.team2ScoreColorSpacer = Box(self.gameSettingsBox2, grid = [2,9], width = 10)
         self.team2ScoreColorButton = PushButton(self.gameSettingsBox2, text = 'Change', grid = [3,9], args = ["team2score", "text", self.team2ScoreColorPrev], command = self.changeTextColor)
 
-
         self.leftSpacer = Box(self.gameSettingsWindow, width = 50, align = 'left', grid = [2,2])
 
-
-
         self.rightSpacer = Box(self.gameSettingsWindow, width = 100, align = 'right', grid = [3,2])
-
 
         self.gameSettingsBox3 = Box(self.gameSettingsWindow, align = 'right', layout = 'grid', width = 'fill', grid = [3,2])
 
@@ -116,12 +111,8 @@ class BuzzerHost():
 
         self.collegeListBox = ListBox(self.gameSettingsBox3, items = [], grid = [0,10,2,1], height = 'fill')
 
-
         self.insertCollegeButton = PushButton(self.gameSettingsBox3, text = 'Insert College', grid = [0,11], align = 'bottom', command = self.insertCollege)
         self.removeCollegeButton = PushButton(self.gameSettingsBox3, text = 'Remove College', grid = [1,11], align = 'bottom', command = self.removeCollege)
-
-
-
 
         """
         playerFontLabel = Text(gameSettingsBox3, text = 'Player Font:', align = 'right', grid = [0,0])
@@ -149,8 +140,6 @@ class BuzzerHost():
         self.menuBar = MenuBar(self.app, toplevel = ['Game Settings'], options = [
                                                                         [['Game Settings',self.gameSettingsFunction]]
                                                                         ])
-
-
         #Title Box
         self.titleBox = Box(self.app, align = 'top', width = 'fill', height = 50)
         self.titleLabel = Text(self.titleBox, text = 'Academic Bowl Control Panel', size = 18)
@@ -288,12 +277,12 @@ class BuzzerHost():
             "IRA Fulton Gold": "Ira A. Fulton  Schools of Engineering  Gold",
             "WP Carey Maroon": "W. P. Carey  School of Business  Maroon",
             "WP Carey Gold": "W. P. Carey  School of Business  Gold",
-            #"Sustainability": "School of Sustainability",
-            #"Health Solutions": "College of Health Solutions",
-            #"Walter Cronkite" : "Walter Cronkite School of  Journalism and  Mass Communication",
+            "Sustainability": "School of Sustainability",
+            "Health Solutions": "College of Health Solutions",
+            "Walter Cronkite" : "Walter Cronkite School of  Journalism and  Mass Communication",
             "CISA" : "College of  Integrative Sciences and Arts",
-            #"Herberger" : "Herberger  Institute for Design and Arts",
-            #"Watts College" : "Watts College of  Public Service and  Commmunity Solutions",
+            "Herberger" : "Herberger  Institute for Design and Arts",
+            "Watts College" : "Watts College of  Public Service and  Commmunity Solutions",
             "The College Maroon": "The College of  Liberal Arts and Sciences  Maroon",
             "The College Gold": "The College of  Liberal Arts and Sciences  Gold",
             "Global Futures": "College of Global Futures"
@@ -302,6 +291,9 @@ class BuzzerHost():
         self.TCPServer.start()
 
         self.addressDict = {}
+
+        self.app.when_closed = self.endExit
+        self.app.repeat(2000, self.inaudibleLoop)
 
         self.initGame()
 
@@ -367,10 +359,6 @@ class BuzzerHost():
             self.team2NameCombo.append(key)
 
         self.app.full_screen = True
-
-
-
-
 
 
     def resetFields(self):
@@ -490,7 +478,6 @@ class BuzzerHost():
 
         # Send all values above to each of the Pis via TCP
 
-
     def startGame(self):
         # Disable the functionality of textboxes and buttons
         # Exclude resume, pause, correct and incorrect buttons
@@ -549,12 +536,12 @@ class BuzzerHost():
         self.subPointTextBox.enable()
 
         self.TCPServer.send("PAUSE", self.addressDict.get("Timer"))
-
-
         # stop timer
 
-
-
+    def endExit(self):
+        self.TCPServer.stop()
+        self.TCPServer.join()
+        self.app.destroy()
 
     def endGame(self):
         endGameYesNo = self.app.yesno("End Game", "You are about to end the game. Are you sure?")
@@ -562,8 +549,6 @@ class BuzzerHost():
             self.TCPServer.stop()
             self.TCPServer.join()
             self.app.destroy()
-
-
 
     def correctAnswer(self, team):
         # Add points to team that answered correctly
@@ -575,8 +560,6 @@ class BuzzerHost():
             self.TCPServer.send("UPDATE SCORE:" + str(correctValue), self.addressDict.get("Team " + str(team)))
         except ValueError:
             self.app.warn("Invalid Input", "Please enter a number")
-
-
 
     def incorrectAnswer(self, team):
         # Subtract points to team that answered correctly
@@ -594,7 +577,6 @@ class BuzzerHost():
 #def decreaseFont(team, player):
     # Decrease font size of player/moderator by x amount via TCP (Send new value = current value - x)
 
-
 #def increaseFont(team, player):
     # Increase font size of player/moderator by x amount via TCP (Send new value = current value + x)
 
@@ -603,18 +585,21 @@ class BuzzerHost():
             if sound == 1:
                 #t = threading.Thread(target=play, args=(self.ding1,))
                 #t.start()
-                playsound('./ding.wav', False)
+                playsound('./ding.mp3', False)
             elif sound == 2:
                 #t = threading.Thread(target=play, args=(self.ding2,))
                 #t.start()
-                playsound('./ding2.wav', False)
+                playsound('./ding2.mp3', False)
             elif sound == 3:
-                playsound('./endGameBuzzerSound.wav', False)
+                playsound('./endGameBuzzerSound.mp3', False)
             elif sound == 4:
-                playsound('./timeOutSound.wav', False)
+                playsound('./timeOutSound.mp3', False)
             print("playing sound")
         except Exception as e:
             print("playsound error" + str(e))
+
+    def inaudibleLoop(self):
+        playsound('./ding2inaudible.mp3', False)
 
 
     def changeTextColor(self, entity, type, colorBox):
@@ -662,7 +647,6 @@ class BuzzerHost():
         self.gameSettingsWindow.focus()
         logoFileSplit = logoFile.split('/')
         self.selectLogoButton.text = logoFileSplit[-1]
-
 
     def insertCollege(self):
         self.team1NameCombo.append(self.shortTeamNameTextBox.value)
