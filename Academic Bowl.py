@@ -293,7 +293,7 @@ class BuzzerHost():
         self.addressDict = {}
 
         self.app.when_closed = self.endExit
-        self.app.repeat(2000, self.inaudibleLoop)
+        #self.app.repeat(2000, self.inaudibleLoop)
 
         self.initGame()
 
@@ -593,13 +593,16 @@ class BuzzerHost():
             elif sound == 3:
                 playsound('./endGameBuzzerSound.mp3', False)
             elif sound == 4:
-                playsound('./timeOutSound.mp3', False)
+                #playsound('./timeOutSound.mp3', False)
             print("playing sound")
         except Exception as e:
             print("playsound error" + str(e))
 
     def inaudibleLoop(self):
-        playsound('./ding2inaudible.mp3', False)
+        try:
+            playsound('./ding2inaudible.mp3', False)
+        except Exception as e:
+            print("playsound error" + str(e))
 
 
     def changeTextColor(self, entity, type, colorBox):

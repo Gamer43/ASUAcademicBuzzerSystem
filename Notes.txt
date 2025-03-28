@@ -1,16 +1,18 @@
 NOTES:
-Need to play inaudible audio file on loop on main host computer to eliminate buzzer sound delay. This is the power amplifiers on the sound system going to sleep
+Host plays inaudible audio file on loop on main host computer to eliminate buzzer sound delay. This is the power amplifiers on the sound system going to sleep
 Need to run a set of terminal commands on Raspberry Pis to disable screen blanking
 Server can tolerate client disconnect and reconnect, but clients cannot tolerate server disconnect, and clients that disconnect must be restarted
 Use player 0 for the moderator
 Use two spaces to insert line break for displaying names
-Change the incorrect score value to rapidly reset scores
+Change the incorrect score value to rapidly reset scores without resetting entire game
+Update button will also update timer
 Start host first, then clients
-Pushbutton Header plugs into pin numbers 9,11,13. Black, Red, White, Respectively. These are GND, GPIO17, GPIO22.
+Get Host IP address from windows settings Settings -> Network -> Wifi -> Hardware Properties -> IPv4 Address
+Pushbutton Header plugs into pin numbers 5,7,9. White, Red, Black, Respectively. These are GPIO3, GPIO4, GND.
+Pushbutton P/N PB6B2FM3M1CAL03. Has LED, 1kOhm. Check thread adapters
+https://askubuntu.com/questions/1293314/internal-pull-up-resistors-not-working
+RPi.GPIO was outdated (0.6.5 -> 0.7.0) and gpiozero was not properly setting the pull resistors
 TODO:
-Set up Raspberry Pis to track the remote repository
-Have host program automatically play inaudible audio on loop
-Set up startup script on rasperry pis to disable screen blanking see: forums.raspberrypi.com/viewtopic.php?t=219854
 Set up automatic reconnect on client applications
-Add a clear score button to host program
-Find a suitable reliable, tactile pushbutton. DONE: PB6B2FM3M1CAL03. Has LED, 1kOhm. Check thread adapters
+Think about upgrading to Raspberry Pi 5
+Replace ding2 with audio file that does not have silence at beginning

@@ -7,8 +7,8 @@ MAROON_RGB = "#B03060"
 GOLD_RGB = "#FFD700"
 SERVER_ADDRESS = ("192.168.0.30", 9000)
 SERVER_PORT = 9000
-LED_GPIO = 17
-BUTTON_GPIO = 27
+LED_GPIO = 4
+BUTTON_GPIO = 3
 
 
 class BuzzerPlayer():
@@ -23,6 +23,10 @@ class BuzzerPlayer():
             self.app = guizero.App(title="Player " + str(playerNumber), width = 600, height = 300, bg=MAROON_RGB)
             self.app.when_closed = self.cleanup
             self.app.set_full_screen()
+            if playerNumber == 0:
+                fontSize = 100
+            else:
+                fontSize = 200
             self.name = guizero.Text(self.app, text="Player " + str(playerNumber), size=200, font="Calibri", color="white", width = "fill", height = "fill")
             self.TCPSocket = TCPClient.TCPClient(serverIP, SERVER_PORT, receive_callback=self.handle_server_response)
             self.TCPSocket.start()
